@@ -11,12 +11,13 @@ ARG DEBIAN_FRONTEND=noninteractive
 WORKDIR /var/www/html
 
 RUN apt-get update \
-    && apt-get -qq install graphviz aspell ghostscript libpspell-dev libpng-dev libicu-dev libxml2-dev libldap2-dev sudo netcat unzip libssl-dev zlib1g-dev libjpeg-dev libfreetype6-dev libzip-dev \
+    && apt-get -qq install git git-core graphviz aspell ghostscript libpspell-dev libpng-dev libicu-dev libxml2-dev libldap2-dev sudo netcat unzip libssl-dev zlib1g-dev libjpeg-dev libfreetype6-dev libzip-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) pspell gd intl xml xmlrpc ldap zip soap mysqli opcache \
     && pecl install redis \
     && docker-php-ext-enable redis \
-    && curl -L https://github.com/moodle/moodle/archive/v${MOODLE_VERSION}.tar.gz | tar xz --strip=1 \
+    && git clone https://github.com/oscarruesga/iomad.git --branch IOMAD_${IOMAD_VERSION}_STABLE --depth=1 . \
+#    && curl -L https://github.com/moodle/moodle/archive/v${MOODLE_VERSION}.tar.gz | tar xz --strip=1 \
     && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
     && mkdir -p /moodledata /var/local/cache \
     && chown -R www-data /moodledata \
